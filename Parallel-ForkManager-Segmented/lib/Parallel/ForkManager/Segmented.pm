@@ -77,7 +77,8 @@ __END__
 
 =head1 NAME
 
-Parallel::ForkManager::Segmented - use Parallel::ForkManager on batches / segments of items.
+Parallel::ForkManager::Segmented - use Parallel::ForkManager on batches /
+segments of items.
 
 =head1 SYNOPSIS
 
@@ -98,7 +99,9 @@ Parallel::ForkManager::Segmented - use Parallel::ForkManager on batches / segmen
     my $PWD       = Cwd::getcwd();
     my @WML_FLAGS = (
         qq%
-    --passoption=2,-X3074 --passoption=2,-I../lib/ --passoption=3,-I../lib/ --passoption=3,-w -I../lib/ $ENV{LATEMP_WML_FLAGS} -p1-3,5,7 -DROOT~. -DLATEMP_THEME=sf.org1 -I $HOME/apps/wml
+    --passoption=2,-X3074 --passoption=2,-I../lib/ --passoption=3,-I../lib/
+    --passoption=3,-w -I../lib/ $ENV{LATEMP_WML_FLAGS} -p1-3,5,7 -DROOT~.
+    -DLATEMP_THEME=sf.org1 -I $HOME/apps/wml
     % =~ /(\S+)/g
     );
 
@@ -130,7 +133,11 @@ Parallel::ForkManager::Segmented - use Parallel::ForkManager on batches / segmen
         my $src      = "$lfn.wml";
         if ( $UNCOND or is_newer( $src, $abs_dest ) )
         {
-            push @queue, [ [ $abs_dest, "-DLATEMP_FILENAME=$lfn", $src, ], $dest ];
+            push @queue,
+            [
+                [ $abs_dest, "-DLATEMP_FILENAME=$lfn", $src, ],
+                $dest,
+            ];
         }
     }
     my $to_proc = [ map $_->[1], @queue ];

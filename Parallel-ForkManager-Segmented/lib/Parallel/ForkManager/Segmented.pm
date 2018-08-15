@@ -2,6 +2,7 @@ package Parallel::ForkManager::Segmented;
 
 use strict;
 use warnings;
+use 5.014;
 
 use List::MoreUtils qw/ natatime /;
 use Parallel::ForkManager ();

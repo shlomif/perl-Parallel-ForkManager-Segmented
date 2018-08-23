@@ -35,6 +35,13 @@ sub run
     my $nproc      = $args->{nproc};
     my $batch_size = $args->{batch_size};
 
+    # Return prematurely on empty input to avoid calling $ch with undef()
+    # at least once.
+    if ( not @$items )
+    {
+        return;
+    }
+
     my $pm;
 
     if ($WITH_PM)

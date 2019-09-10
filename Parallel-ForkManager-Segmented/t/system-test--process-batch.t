@@ -10,19 +10,21 @@ use Path::Tiny qw/ path /;
     my $NUM    = 30;
     my $temp_d = Path::Tiny->tempdir;
 
-    my @queue = map { [$_] } 1 .. $NUM;
+    my @queue = ( 1 .. $NUM );
     my $proc  = sub {
-        my $fn = shift(@_)->[0];
-        $temp_d->child($fn)->spew_utf8("Wrote $fn .\n");
+        foreach my $fn ( @{ shift(@_) } )
+        {
+            $temp_d->child($fn)->spew_utf8("Wrote $fn .\n");
+        }
         return;
     };
     Parallel::ForkManager::Segmented->new->run(
         {
-            WITH_PM      => 1,
-            items        => \@queue,
-            nproc        => 3,
-            batch_size   => 8,
-            process_item => $proc,
+            WITH_PM       => 1,
+            items         => \@queue,
+            nproc         => 3,
+            batch_size    => 8,
+            process_batch => $proc,
         }
     );
     foreach my $i ( 1 .. $NUM )

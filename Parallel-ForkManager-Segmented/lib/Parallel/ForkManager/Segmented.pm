@@ -213,6 +213,8 @@ serially.
 
 =item * process_batch
 
+[Added in v0.2.0.]
+
 A reference to a subroutine that accepts a reference to an array of a whole batch
 that is processed as a whole. If specified, C<process_item> is not used.
 

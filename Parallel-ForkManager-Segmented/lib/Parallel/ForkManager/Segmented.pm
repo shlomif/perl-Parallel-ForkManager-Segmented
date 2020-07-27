@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use 5.014;
 
-use List::MoreUtils qw/ natatime /;
 use Parallel::ForkManager ();
 
 sub new
@@ -29,11 +28,16 @@ sub run
 {
     my ( $self, $args ) = @_;
 
-    my $WITH_PM  = !$args->{disable_fork};
-    my $items    = $args->{items};
-    my $cb       = $args->{process_item};
-    my $batch_cb = $args->{process_batch};
+    my $WITH_PM   = !$args->{disable_fork};
+    my $items     = $args->{items};
+    my $stream_cb = $args->{stream_cb};
+    my $cb        = $args->{process_item};
+    my $batch_cb  = $args->{process_batch};
 
+    if ( $stream_cb && $items )
+    {
+        die "Do not specify both stream_cb and items!";
+    }
     if ( $batch_cb && $cb )
     {
         die "Do not specify both process_item and process_batch!";
@@ -50,9 +54,20 @@ sub run
 
     # Return prematurely on empty input to avoid calling $ch with undef()
     # at least once.
-    if ( not @$items )
+    if ($items)
     {
-        return;
+        if ( not @$items )
+        {
+            return;
+        }
+        $stream_cb = sub {
+            my ($args) = @_;
+            my $size = $args->{size};
+
+            return +{ items =>
+                    scalar( @$items ? [ splice @$items, 0, $size ] : undef() ),
+            };
+        };
     }
 
     my $pm;
@@ -61,10 +76,12 @@ sub run
     {
         $pm = Parallel::ForkManager->new($nproc);
     }
-    $batch_cb->( [ shift @$items ] );
-    my $it = natatime $batch_size, @$items;
+    my $batch = $stream_cb->( { size => 1 } )->{items};
+    return if not defined $batch;
+    $batch_cb->($batch);
 ITEMS:
-    while ( my @batch = $it->() )
+    while (
+        defined( $batch = $stream_cb->( { size => $batch_size } )->{items} ) )
     {
         if ($WITH_PM)
         {
@@ -75,7 +92,7 @@ ITEMS:
                 next ITEMS;
             }
         }
-        $batch_cb->( \@batch );
+        $batch_cb->($batch);
         if ($WITH_PM)
         {
             $pm->finish;    # Terminates the child process
@@ -197,6 +214,30 @@ A reference to a subroutine that accepts one item and processes it.
 =item * items
 
 A reference to the array of items.
+
+=item * stream_cb
+
+A reference to a callback for returning new batches of items (cannot
+be specified along with 'items'.)
+
+Accepts a hash ref with the key 'size' specifying an integer of the maximal
+item count.
+
+Returns a hash ref with the key 'items' pointing to an array reference of
+items or undef() upon end-of-stream.
+
+E.g:
+
+        $stream_cb = sub {
+            my ($args) = @_;
+            my $size = $args->{size};
+
+            return +{ items =>
+                    scalar( @$items ? [ splice @$items, 0, $size ] : undef() ),
+            };
+        };
+
+Added at version 0.4.0.
 
 =item * nproc
 

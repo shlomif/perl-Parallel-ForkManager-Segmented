@@ -195,6 +195,12 @@ segments of items.
     );
     system("cd $PWD && $CMD @{$to_proc}") and die "$!";
 
+=head1 DESCRIPTION
+
+This module builds upon L<Parallel::ForkManager> allowing one to pass a
+batch (or "segment") of several items for processing inside a worker. This
+is done in order to hopefully reduce the forking/exiting overhead.
+
 =head1 METHODS
 
 =head2 my $obj = Parallel::ForkManager::Segmented->new;

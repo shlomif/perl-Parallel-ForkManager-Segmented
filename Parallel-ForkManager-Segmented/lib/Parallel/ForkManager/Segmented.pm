@@ -246,4 +246,16 @@ Example:
 
 =back
 
+=head1 SEE ALSO
+
+=over 4
+
+=item * L<Parallel::ForkManager>
+
+=item * L<IO::Async::Function> - a less snowflake approach.
+
+=item * L<https://perl-begin.org/uses/multitasking/>
+
+=back
+
 =cut

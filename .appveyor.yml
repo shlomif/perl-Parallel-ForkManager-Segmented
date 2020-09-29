@@ -44,7 +44,7 @@ install:
     - cpanm -nq Module::Build
     - cpanm -nq Dist::Zilla Pod::Weaver::Section::Support Perl::Critic Perl::Tidy Test::Code::TidyAll
     # Module files for this distribution are not in root
-    - cmd: "cd Parallel-ForkManager-Segmented"
+    - cmd: "cd Parallel-ForkManager-Segmented Parallel-ForkManager-Segmented-Base"
     - dzil authordeps | cpanm -nq
     - dzil listdeps   | cpanm -nq
     - cpanm -nq Test::EOL Test::NoTabs Test::Pod Test::Pod::Coverage Pod::Coverage::TrustPod

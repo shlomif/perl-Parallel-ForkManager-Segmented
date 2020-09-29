@@ -78,7 +78,11 @@ segments of items.
 
 This module builds upon L<Parallel::Map> allowing one to pass a
 batch (or "segment") of several items for processing inside a worker. This
-is done in order to hopefully reduce the forking/exiting overhead.
+is done in order to hopefully speed up the processing.
+
+It aims to provide a compatible API with L<Parallel::ForkManager::Segmented>
+only based on L<IO::Async> and L<Parallel::Map> rather than
+L<Parallel::ForkManager> .
 
 =head1 METHODS
 
@@ -125,8 +129,6 @@ E.g:
                     scalar( @$items ? [ splice @$items, 0, $size ] : undef() ),
             };
         };
-
-Added at version 0.4.0.
 
 =item * nproc
 

@@ -24,5 +24,7 @@ use Path::Tiny qw/ path /;
             process_item => $proc,
         }
     );
+
+    # TEST
     pass("Did not err - success!");
 }

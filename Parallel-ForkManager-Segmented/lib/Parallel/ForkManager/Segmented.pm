@@ -24,7 +24,7 @@ sub _init
     return;
 }
 
-sub run
+sub process_args
 {
     my ( $self, $args ) = @_;
 
@@ -69,6 +69,23 @@ sub run
             };
         };
     }
+    return +{
+        WITH_PM    => $WITH_PM,
+        batch_cb   => $batch_cb,
+        batch_size => $batch_size,
+        nproc      => $nproc,
+        stream_cb  => $stream_cb,
+    };
+}
+
+sub run
+{
+    my ( $self, $args ) = @_;
+
+    my $processed = $self->process_args($args);
+    return if not $processed;
+    my ( $WITH_PM, $batch_cb, $batch_size, $nproc, $stream_cb, ) =
+        @{$processed}{qw/ WITH_PM batch_cb batch_size nproc stream_cb  /};
 
     my $pm;
 
@@ -149,6 +166,10 @@ is done in order to hopefully reduce the forking/exiting overhead.
 =head2 my $obj = Parallel::ForkManager::Segmented->new;
 
 Initializes a new object.
+
+=head2 my \%ret = $obj->process_args(+{ %ARGS })
+
+TBD.
 
 =head2 $obj->run(+{ %ARGS });
 

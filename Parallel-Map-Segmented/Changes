@@ -1,5 +1,8 @@
 Revision history for Parallel-Map-Segmented
 
+0.2.2       2020-09-30
+    - Respect and propagate the nproc argument (to run()/etc.).
+
 0.2.1       2020-09-29
     - Clarify the docs wrt fork/execve and other stuff.
 

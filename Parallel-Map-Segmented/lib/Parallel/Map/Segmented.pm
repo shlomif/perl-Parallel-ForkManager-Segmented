@@ -25,6 +25,7 @@ sub run
         pmap_void sub { $batch_cb->(shift); Future->done; }, generate => sub {
             return $stream_cb->( { size => $batch_size } )->{items} // ();
             },
+            ( $nproc ? ( forks => $nproc ) : () ),
             ;
     }
     else

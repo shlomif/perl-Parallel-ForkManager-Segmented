@@ -1,5 +1,10 @@
 Revision history for Parallel-ForkManager-Segmented
 
+0.10.0      2020-09-30
+
+    - Use serial_run() from Parallel::ForkManager::Segmented::Base v0.4.0.
+        - Refactoring / optimization.
+
 0.8.0       2020-09-29
     - Extract and spin-off Parallel::ForkManager::Segmented::Base with
     process_args().

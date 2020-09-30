@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use 5.014;
 
+use Parallel::ForkManager::Segmented::Base v0.4.0 ();
 use parent 'Parallel::ForkManager::Segmented::Base';
 
 use Parallel::ForkManager ();
@@ -17,12 +18,11 @@ sub run
     my ( $WITH_PM, $batch_cb, $batch_size, $nproc, $stream_cb, ) =
         @{$processed}{qw/ WITH_PM batch_cb batch_size nproc stream_cb  /};
 
+    return $self->serial_run($processed) if not $WITH_PM;
+
     my $pm;
 
-    if ($WITH_PM)
-    {
-        $pm = Parallel::ForkManager->new($nproc);
-    }
+    $pm = Parallel::ForkManager->new($nproc);
     my $batch = $stream_cb->( { size => 1 } )->{items};
     return if not defined $batch;
     $batch_cb->($batch);
@@ -30,25 +30,16 @@ ITEMS:
     while (
         defined( $batch = $stream_cb->( { size => $batch_size } )->{items} ) )
     {
-        if ($WITH_PM)
-        {
-            my $pid = $pm->start;
+        my $pid = $pm->start;
 
-            if ($pid)
-            {
-                next ITEMS;
-            }
+        if ($pid)
+        {
+            next ITEMS;
         }
         $batch_cb->($batch);
-        if ($WITH_PM)
-        {
-            $pm->finish;    # Terminates the child process
-        }
+        $pm->finish;    # Terminates the child process
     }
-    if ($WITH_PM)
-    {
-        $pm->wait_all_children;
-    }
+    $pm->wait_all_children;
     return;
 }
 

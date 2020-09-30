@@ -2,8 +2,10 @@ package Parallel::Map::Segmented;
 
 use strict;
 use warnings;
+use autodie;
 use 5.014;
 
+use Parallel::ForkManager::Segmented::Base v0.4.0;
 use parent 'Parallel::ForkManager::Segmented::Base';
 
 use Parallel::Map qw/ pmap_void /;
@@ -30,14 +32,7 @@ sub run
     }
     else
     {
-        while (
-            defined(
-                $batch = $stream_cb->( { size => $batch_size } )->{items}
-            )
-            )
-        {
-            $batch_cb->($batch);
-        }
+        $self->serial_run($processed);
     }
     return;
 }

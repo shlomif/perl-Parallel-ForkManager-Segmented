@@ -97,7 +97,7 @@ Parallel::ForkManager::Segmented::Base - base class for Parallel::ForkManager::S
 =head1 DESCRIPTION
 
 This module provides the new() and process_args() methods for L<Parallel::ForkManager::Segmented>
-and the upcoming L<Parallel::Map::Segmented> .
+and for L<Parallel::Map::Segmented> .
 
 =head1 METHODS
 
@@ -117,7 +117,9 @@ Process the arguments passed to run().
 
 =item * L<Parallel::ForkManager>
 
-=item * L<IO::Async::Function> - a less snowflake approach.
+=item * L<Parallel::Map::Segmented>
+
+Based on L<IO::Async::Function> and L<Parallel::Map> - a less snowflake approach.
 
 =item * L<https://perl-begin.org/uses/multitasking/>
 

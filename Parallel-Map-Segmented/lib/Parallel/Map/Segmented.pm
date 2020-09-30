@@ -46,6 +46,8 @@ sub run
 
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 Parallel::Map::Segmented - use Parallel::Map on batches /
@@ -209,15 +211,15 @@ Same API as Parallel::Map::Segmented but uses L<Parallel::ForkManager> .
 
 =over 4
 
-=item * L<https://metacpan.org/author/PEVANS>
+=item * L<https://metacpan.org/author/PEVANS> - Paul Evans
 
 For L<IO::Async>
 
-=item * L<https://metacpan.org/author/MSTROUT>
+=item * L<https://metacpan.org/author/MSTROUT> - Matt S. Trout
 
 For L<Parallel::Map>
 
-=item * L<https://metacpan.org/author/ILMARI>
+=item * L<https://metacpan.org/author/ILMARI> - Dagfinn Ilmari Mannsåker
 
 Helping with questions on #io-async .
 

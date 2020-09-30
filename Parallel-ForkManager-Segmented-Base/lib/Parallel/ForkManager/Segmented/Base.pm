@@ -2,6 +2,7 @@ package Parallel::ForkManager::Segmented::Base;
 
 use strict;
 use warnings;
+use autodie;
 use 5.014;
 
 sub new
@@ -76,9 +77,26 @@ sub process_args
     };
 }
 
+sub serial_run
+{
+    my ( $self, $processed ) = @_;
+    my ( $WITH_PM, $batch_cb, $batch_size, $nproc, $stream_cb, ) =
+        @{$processed}{qw/ WITH_PM batch_cb batch_size nproc stream_cb  /};
+
+    while (
+        defined( my $batch = $stream_cb->( { size => $batch_size } )->{items} )
+        )
+    {
+        $batch_cb->($batch);
+    }
+    return;
+}
+
 1;
 
 __END__
+
+=encoding utf8
 
 =head1 NAME
 
@@ -108,6 +126,12 @@ Initializes a new object.
 =head2 my \%ret = $obj->process_args(+{ %ARGS })
 
 Process the arguments passed to run().
+
+=head2 $obj->serial_run($process_args)
+
+Implement a (possibly naïve) serial run.
+
+Added in version 0.4.0.
 
 =head1 SEE ALSO
 
